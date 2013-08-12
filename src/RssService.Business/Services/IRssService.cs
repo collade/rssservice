@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ServiceModel;
+    using System.Threading.Tasks;
 
     [ServiceContract]
     public interface IRssService
@@ -25,5 +26,8 @@
 
         [OperationContract]
         bool Run();
+
+        [OperationContract]
+        Task<bool> ReadRss(string rss);
     }
 }
