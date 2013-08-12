@@ -1,5 +1,7 @@
 ﻿namespace RssService.Business.Services
 {
+    using System.Linq;
+
     using global::RssService.Business.Entities;
     using global::RssService.Business.Repos;
 
@@ -24,12 +26,24 @@
 
         public bool HasOrganization(string organizationId)
         {
-            throw new System.NotImplementedException();
+            return organizationRepo.AsQueryable().Any(x => x.OrganizationId == organizationId);
         }
 
         public bool AddOrganization(string organizationId)
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                return false;
+            }
+
+            if (HasOrganization(organizationId))
+            {
+                return false;
+            }
+
+            var result = organizationRepo.Add(new Organization { CreatedBy = "System", UpdatedBy = "System", OrganizationId = organizationId });
+
+            return result.Ok;
         }
 
         public bool AddRss(string organizationId, string rss)
