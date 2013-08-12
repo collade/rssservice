@@ -208,6 +208,17 @@
 
         public bool Run()
         {
+            if (!this.HasOrganization("51fb4622902c7f0fecca0343"))
+            {
+                this.AddOrganization("51fb4622902c7f0fecca0343");
+
+                const string TechCrunchRss = "http://feeds.feedburner.com/techcrunch/startups?format=xml";
+                const string SethGodinRss = "http://feeds.feedblitz.com/sethsblog&x=1";
+
+                this.AddRss("51fb4622902c7f0fecca0343", TechCrunchRss);
+                this.AddRss("51fb4622902c7f0fecca0343", SethGodinRss);
+            }
+
             var oneMinTimer = new Timer(timerTick, null, 0, 60000);
 
             return true;
@@ -262,7 +273,7 @@
                                                   .Where(x => x.RssUrl == rss)
                                                   .Select(x => x.OrganizationId)
                                                   .ToList();
-                                
+
 
                                 foreach (var organizaton in organizatons)
                                 {
