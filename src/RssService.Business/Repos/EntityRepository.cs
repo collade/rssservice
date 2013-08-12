@@ -57,6 +57,11 @@
                                .Set(x => x.IsDeleted, true));
         }
 
+        public WriteConcernResult Clear() {
+            var writeConcernResult = _collection.RemoveAll();
+            return writeConcernResult;
+        }
+
         public WriteConcernResult Update(IMongoQuery mongoQuery, IMongoUpdate mongoUpdate)
         {
             return Update(mongoQuery, mongoUpdate, UpdateFlags.Upsert);

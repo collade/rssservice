@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RssService.Test
+﻿namespace RssService.Test
 {
+    using System;
+
     using NUnit.Framework;
 
     using RssService.Business.Entities;
@@ -22,6 +18,8 @@ namespace RssService.Test
 
         protected IRssService _rssService;
 
+        protected const string organizationId = "1";
+
         [SetUp]
         public void Setup()
         {
@@ -30,9 +28,27 @@ namespace RssService.Test
             _rssAddressRepo = new EntityRepository<RssAddress>();
             _rssItemRepo = new EntityRepository<RssItem>();
 
+            _organizationRepo.Clear();
+            _distinctRssAddressRepo.Clear();
+            _rssAddressRepo.Clear();
+            _rssItemRepo.Clear();
+
             _rssService = new RssService(_organizationRepo, _distinctRssAddressRepo, _rssAddressRepo, _rssItemRepo);
         }
 
+        [Test]
+        public void Should_save_organization_when_addorganization_method_called()
+        {
+            Assert.AreEqual(true, _rssService.AddOrganization(organizationId));
+        }
+
+        [Test]
+        public void Should_check_if_organization_exists_when_hasorganization_method_called()
+        {
+            _rssService.AddOrganization(organizationId);
+            Assert.AreEqual(true, _rssService.HasOrganization(organizationId));
+            Assert.AreEqual(false, _rssService.HasOrganization(Guid.NewGuid().ToString()));
+        }
 
         [Test]
         public void Should_save_rss_when_addrss_method_called()

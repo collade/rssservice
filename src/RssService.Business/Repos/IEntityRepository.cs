@@ -54,6 +54,8 @@
         /// <returns></returns>
         WriteConcernResult Delete(TEntity entity);
 
+        WriteConcernResult Clear();
+
         /// <summary>
         /// Updates entities with given query and update actions.
         /// </summary>
