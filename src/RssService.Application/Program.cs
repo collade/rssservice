@@ -1,15 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RssService.Application
+﻿namespace RssService.Application
 {
+    using System;
+    using System.ServiceProcess;
+
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            if (Environment.UserInteractive)
+            {
+                Bootstrapper.Initialize();
+                Console.WriteLine("Rss Service is ready!");
+                Console.ReadLine();
+            }
+            else
+            {
+                ServiceBase.Run(new ServiceBase[] { new  RssWindowsService() });
+            }
         }
     }
 }
