@@ -207,7 +207,7 @@
             return distinctRssAddressRepo.AsQueryable().Any(x => x.RssUrl == rss);
         }
 
-        public bool Run()
+        public void Run()
         {
             if (!this.HasOrganization("51fb4622902c7f0fecca0343"))
             {
@@ -220,17 +220,16 @@
                 this.AddRss("51fb4622902c7f0fecca0343", SethGodinRss);
             }
 
-            var oneMinTimer = new Timer(this.TimerTick, null, 0, 60000);
-
-            return true;
+            const int TimeIntervalFiveSec = 5000;
+            var timer = new Timer(this.TimerTick, null, 0, TimeIntervalFiveSec);
         }
 
-        private void TimerTick(object state)
+        private async void TimerTick(object state)
         {
             var rsses = distinctRssAddressRepo.AsQueryable().ToList();
             foreach (var distinctRssAddress in rsses)
             {
-                this.ReadRss(distinctRssAddress.RssUrl);
+                await this.ReadRss(distinctRssAddress.RssUrl);
             }
         }
 

@@ -27,7 +27,7 @@
         bool HasDistinctRss(string rss);
 
         [OperationContract]
-        bool Run();
+        void Run();
 
         [OperationContract]
         Task<bool> ReadRss(string rss);
