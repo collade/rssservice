@@ -4,6 +4,8 @@
     using System.ServiceModel;
     using System.Threading.Tasks;
 
+    using global::RssService.Business.Entities;
+
     [ServiceContract]
     public interface IRssService
     {
@@ -29,5 +31,8 @@
 
         [OperationContract]
         Task<bool> ReadRss(string rss);
+
+        [OperationContract]
+        Task<List<RssItemDto>> GetRssItems(string organizationId);
     }
 }

@@ -47,6 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,6 +61,7 @@
     <Compile Include="Entities\Organization.cs" />
     <Compile Include="Entities\RssAddress.cs" />
     <Compile Include="Entities\RssItem.cs" />
+    <Compile Include="Entities\RssItemDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repos\EntityRepository.cs" />
     <Compile Include="Repos\IEntityRepository.cs" />

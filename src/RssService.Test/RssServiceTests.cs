@@ -126,7 +126,16 @@
             Assert.AreEqual(true, _rssService.ReadRss(sethGodinRss).Result);
         }
 
+        [Test]
+        public void Should_retun_rssitems_of_organization_when_GetRssItems_method_called()
+        {
+            this.ClearCollections();
+            _rssService.AddOrganization(organizationId);
+            _rssService.AddRss(organizationId, techCrunchRss);
 
+            var items = _rssService.GetRssItems(organizationId).Result;
+            Assert.Greater(0, items.Count);
+        }
     }
 
 }

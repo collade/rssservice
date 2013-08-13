@@ -219,12 +219,12 @@
                 this.AddRss("51fb4622902c7f0fecca0343", SethGodinRss);
             }
 
-            var oneMinTimer = new Timer(timerTick, null, 0, 60000);
+            var oneMinTimer = new Timer(this.TimerTick, null, 0, 60000);
 
             return true;
         }
 
-        private void timerTick(object state)
+        private void TimerTick(object state)
         {
             var rsses = distinctRssAddressRepo.AsQueryable().ToList();
             foreach (var distinctRssAddress in rsses)
@@ -274,16 +274,13 @@
                                                   .Select(x => x.OrganizationId)
                                                   .ToList();
 
-
                                 foreach (var organizaton in organizatons)
                                 {
                                     //notiy with pusher
                                     var orgId = organizaton;
-                                    ThreadPool.QueueUserWorkItem(m => pusherServer.Trigger(string.Format("presence-{0}", orgId), "rssitem_added",
-                                        new { link, title, content, time2 }));
-
+                                    ThreadPool.QueueUserWorkItem(m =>
+                                        pusherServer.Trigger(string.Format("presence-{0}", orgId), "rssitem_added", new { link, title, content, time2 }));
                                 }
-
                             }
                         }
                     }
@@ -295,6 +292,41 @@
             { }
 
             return Task.FromResult(false);
+        }
+
+        public Task<List<RssItemDto>> GetRssItems(string organizationId) {
+
+            var result = new List<RssItemDto>();
+
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                return Task.FromResult(result);
+            }
+
+            if (!HasOrganization(organizationId))
+            {
+                return Task.FromResult(result);
+            }
+
+            var rsses = this.GetRsses(organizationId);
+            foreach (var rss in rsses)
+            {
+                if (rssItemRepo.AsQueryable().Any(x => x.RssUrl == rss)) {
+                    string rss1 = rss;
+                    var items = rssItemRepo.AsQueryable().Where(x => x.RssUrl == rss1).ToList();
+                    foreach (var rssItem in items) {
+                        result.Add(new RssItemDto {
+                                                      Link = rssItem.Link,
+                                                      Title = rssItem.Title,
+                                                      Content = rssItem.Content,
+                                                      Time = rssItem.CreatedAt.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture)
+                                                  });
+                    }
+                }
+            }
+
+
+            return Task.FromResult(result);
         }
     }
 }
