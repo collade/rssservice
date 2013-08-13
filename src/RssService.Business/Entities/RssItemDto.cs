@@ -1,5 +1,6 @@
 ﻿namespace RssService.Business.Entities
 {
+    using System;
     using System.Runtime.Serialization;
 
     [DataContract]
@@ -13,5 +14,8 @@
         public string Content { get; set; }
         [DataMember]
         public string Time { get; set; }
+
+        [DataMember]
+        public DateTime CreatedAt { get; set; }
     }
 }

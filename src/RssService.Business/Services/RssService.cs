@@ -325,7 +325,8 @@
                             Link = rssItem.Link,
                             Title = rssItem.Title,
                             Content = rssItem.Summary,
-                            Time = rssItem.CreatedAt.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture)
+                            Time = rssItem.CreatedAt.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture),
+                            CreatedAt = rssItem.CreatedAt
                         });
                     }
                 }
