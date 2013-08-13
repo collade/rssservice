@@ -134,7 +134,7 @@
             _rssService.AddRss(organizationId, techCrunchRss);
 
             var items = _rssService.GetRssItems(organizationId).Result;
-            Assert.Greater(0, items.Count);
+            Assert.Greater(items.Count, 0);
         }
     }
 

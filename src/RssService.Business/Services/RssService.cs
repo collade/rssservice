@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.Linq;
     using System.ServiceModel.Syndication;
+    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
@@ -249,12 +250,12 @@
                             var link = item.Links.First().Uri.AbsoluteUri;
                             var title = item.Title.Text;
                             var content = item.Summary.Text;
+                            var summary = string.Format("{0} ...", Regex.Replace(item.Summary.Text, "<.*?>", string.Empty).Substring(0, 222));
                             var time2 = item.PublishDate.DateTime.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture);
 
                             if (!rssItemRepo.AsQueryable().Any(x => x.RssId == item.Id))
                             {
-                                rssItemRepo.Add(
-                                new RssItem
+                                rssItemRepo.Add(new RssItem
                                 {
                                     CreatedBy = "System",
                                     UpdatedBy = "System",
@@ -264,7 +265,8 @@
                                     RssId = item.Id,
                                     Link = link,
                                     Title = title,
-                                    Content = content
+                                    Content = content,
+                                    Summary = summary
                                 });
 
                                 //find who to notify
@@ -279,7 +281,7 @@
                                     //notiy with pusher
                                     var orgId = organizaton;
                                     ThreadPool.QueueUserWorkItem(m =>
-                                        pusherServer.Trigger(string.Format("presence-{0}", orgId), "rssitem_added", new { link, title, content, time2 }));
+                                        pusherServer.Trigger(string.Format("presence-{0}", orgId), "rssitem_added", new { link, title, summary, time2 }));
                                 }
                             }
                         }
@@ -294,7 +296,8 @@
             return Task.FromResult(false);
         }
 
-        public Task<List<RssItemDto>> GetRssItems(string organizationId) {
+        public Task<List<RssItemDto>> GetRssItems(string organizationId)
+        {
 
             var result = new List<RssItemDto>();
 
@@ -311,20 +314,22 @@
             var rsses = this.GetRsses(organizationId);
             foreach (var rss in rsses)
             {
-                if (rssItemRepo.AsQueryable().Any(x => x.RssUrl == rss)) {
+                if (rssItemRepo.AsQueryable().Any(x => x.RssUrl == rss))
+                {
                     string rss1 = rss;
                     var items = rssItemRepo.AsQueryable().Where(x => x.RssUrl == rss1).ToList();
-                    foreach (var rssItem in items) {
-                        result.Add(new RssItemDto {
-                                                      Link = rssItem.Link,
-                                                      Title = rssItem.Title,
-                                                      Content = rssItem.Content,
-                                                      Time = rssItem.CreatedAt.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture)
-                                                  });
+                    foreach (var rssItem in items)
+                    {
+                        result.Add(new RssItemDto
+                        {
+                            Link = rssItem.Link,
+                            Title = rssItem.Title,
+                            Content = rssItem.Summary,
+                            Time = rssItem.CreatedAt.ToString("dd MMMM dddd - HH:mm", CultureInfo.InvariantCulture)
+                        });
                     }
                 }
             }
-
 
             return Task.FromResult(result);
         }
